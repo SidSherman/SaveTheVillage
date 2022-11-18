@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Root" style="flex-grow: 1;">
+        <ui:VisualElement name="Panel" style="flex-grow: 1; margin-left: 100px; margin-right: 100px; margin-top: 100px; margin-bottom: 100px; background-image: url(&apos;project://database/Assets/_Project/UI/Square.png?fileID=2800000&amp;guid=17a65e034bc2fb540a23ee0cd4a4b5ef&amp;type=3#Square&apos;); flex-shrink: 1; align-items: center; justify-content: center;">
+            <ui:Label text="Замок взломан!" display-tooltip-when-elided="true" name="MessageLabel" style="flex-grow: 1; color: rgb(0, 0, 0); flex-wrap: wrap; white-space: normal; font-size: 100px; margin-left: 10px; margin-right: 10px; margin-top: 10px; margin-bottom: 10px; height: auto; -unity-text-align: middle-center;" />
+            <ui:Button text="Ещё раз" display-tooltip-when-elided="true" name="StartTimer" style="flex-grow: 1; width: 50%; align-items: center; justify-content: center; flex-direction: column; flex-shrink: 1; -unity-text-align: middle-center; white-space: normal; height: auto; margin-top: 10px; margin-bottom: 10px; -unity-font: url(&apos;project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&amp;guid=6928cfa929847b04684982feb9c45ddb&amp;type=3#NotInter-Regular&apos;); font-size: 100px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

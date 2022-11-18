@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4250413327880724941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4250413327880724932}
+  - component: {fileID: 4250413327880724928}
+  - component: {fileID: 4250413327880724931}
+  m_Layer: 5
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4250413327880724932
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4250413327880724941}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4250413327880724928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4250413327880724941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a2c3c41d5331284fbeb3a275005cf17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pins:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _timeManager: {fileID: 0}
+  _uiHandler: {fileID: 0}
+  _hammer:
+    _pin1: 2
+    _pin2: -1
+    _pin3: 3
+  _screw:
+    _pin1: -3
+    _pin2: 2
+    _pin3: -1
+  _picklock:
+    _pin1: 1
+    _pin2: -1
+    _pin3: -2
+  levels:
+  - _pins:
+      _pin1: 2
+      _pin2: 7
+      _pin3: 4
+    _targetValue: 5
+  - _pins:
+      _pin1: 10
+      _pin2: 2
+      _pin3: 9
+    _targetValue: 5
+  - _pins:
+      _pin1: 8
+      _pin2: 3
+      _pin3: 6
+    _targetValue: 5
+  - _pins:
+      _pin1: 5
+      _pin2: 4
+      _pin3: 3
+    _targetValue: 5
+  - _pins:
+      _pin1: 3
+      _pin2: 7
+      _pin3: 9
+    _targetValue: 5
+  _currentLevel: 0
+  _gameTime: 15
+--- !u!222 &4250413327880724931
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4250413327880724941}
+  m_CullTransparentMesh: 1
