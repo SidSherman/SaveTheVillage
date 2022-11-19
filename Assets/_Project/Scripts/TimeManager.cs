@@ -7,7 +7,9 @@ using UnityEngine;
 public class TimeManager : MonoBehaviour
 {
     [SerializeField] private float _time;
+    [SerializeField] private float _timerDelay;
     [SerializeField] private bool _shouldRepeat;
+    [SerializeField] private bool _shouldStartOnAwake;
     private float _startedTime;
     private float _elapsedTime;
     private  float _remainingTime;
@@ -22,12 +24,19 @@ public class TimeManager : MonoBehaviour
     public bool IsValidTimer {get {return _isValidTimer;}}
     public bool IsFinishedTimer { get => _isFinishedTimer; }
 
+    public float TimerDelay { get => _timerDelay; set { _timerDelay = value; } }
+
 
     private void Start()
     {
         _isFinishedTimer = false;
         _isValidTimer = false;
         _isPausedTimer = false;
+
+        if(_shouldStartOnAwake)
+        {
+            StartTimer();
+        }
     }
     
     void Update()
@@ -37,16 +46,23 @@ public class TimeManager : MonoBehaviour
         {
             if(!_isPausedTimer)
             {
-              
-                if (_remainingTime > 0)
+                if(_timerDelay >= 0)
                 {
-                    _remainingTime -= Time.deltaTime;
-                    _elapsedTime += Time.deltaTime;
+                    _timerDelay -= Time.deltaTime;
                 }
                 else
                 {
-                    StopTimer();
+                    if (_remainingTime > 0)
+                    {
+                        _remainingTime -= Time.deltaTime;
+                        _elapsedTime += Time.deltaTime;
+                    }
+                    else
+                    {
+                        StopTimer();
+                    }
                 }
+               
             }
         }   
     }
@@ -68,6 +84,8 @@ public class TimeManager : MonoBehaviour
 
     public void StartTimer()
     {
+
+
         _isFinishedTimer = false;
         _isValidTimer = true;
         _isPausedTimer = false;
@@ -76,10 +94,11 @@ public class TimeManager : MonoBehaviour
         _startedTime = Time.time;
     }
 
-    public void StartTimer(float timerValue)
+    public void StartTimer(float timerValue, float timerDelay)
     {
-
+        _timerDelay = timerDelay;
         _time = timerValue;
+        _isFinishedTimer = false;
         _isValidTimer = true;
         _isPausedTimer = false;
         _remainingTime = timerValue;

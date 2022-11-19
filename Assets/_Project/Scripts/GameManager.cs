@@ -3,119 +3,199 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class GameManager : MonoBehaviour
 {
 
-    [SerializeField] private Pin[] _pins;
-    [SerializeField] private TimeManager _timeManager;
     [SerializeField] private UIHandler _uiHandler;
-    [SerializeField] private InstrumentsValue _hammer;
-    [SerializeField] private InstrumentsValue _screw;
-    [SerializeField] private InstrumentsValue _picklock;
-    [SerializeField] private LevelValue[] levels;
 
+    [Header("Timers")]
+    [SerializeField] private TimeManager _kmetTrainingtimeManager;
+    [SerializeField] private TimeManager _knightTrainingTimeManager;
+    [SerializeField] private TimeManager _raidTimeManager;
+    [SerializeField] private TimeManager _foodProductionTimeManager;
+
+    [Header("Civilliance Info")]
     [SerializeField] private int kmetsCount = 1;
     [SerializeField] private int knightsCount = 0;
+
+    [Header("RaidInfo")]
+    [SerializeField] private float raidTime = 20;
+    [SerializeField] private int raidDelay = 0;
+    [SerializeField] private int banditsCount = 0;
+
+    [Header("Training Civilliance Info")]
+    [SerializeField] private float kmetTrainignTime = 5;
+    [SerializeField] private float knightTrainingTime = 10;
+    [SerializeField] private int kmetTrainignCost = 5;
+    [SerializeField] private int knightTrainingCost = 10;
+
+    [Header("Food Production Info")]
+    [SerializeField] private int foodCount;
+    [SerializeField] private float foodProductionTime = 10;
     [SerializeField] private int foodProductionByOneKmet;
-    [SerializeField] private int foodProductionFull;
     [SerializeField] private int foodProduction;
-   [SerializeField] private int foodDemands;
-   [SerializeField] private int foodDemandsByOneKnight;
-    [SerializeField] private int _currentLevel;
-    [SerializeField] private float _gameTime;
+    [SerializeField] private int foodDemandsByOneKnight;
 
-    private int _properPinsValue;
 
-    public InstrumentsValue Hammer { get => _hammer; set => _hammer = value; }
-    public InstrumentsValue Screw { get => _screw; set => _screw = value; }
-    public InstrumentsValue Picklock { get => _picklock; set => _picklock = value; }
+    private void Start()
+    {
+        _foodProductionTimeManager.StartTimer(foodProductionTime, 0f);
+        _raidTimeManager.StartTimer(raidTime, raidDelay * foodProductionTime);
+        CalculateFoodProduction();
+        UpdateUI();
+    }
 
- 
     void Update()
     {
-      
 
-        if(_timeManager.IsFinishedTimer)
+        if (_foodProductionTimeManager)
         {
-           
-            FailGame();
-        }
-
-
-    }
-    
-    public void CheckPins(){
-
-        foreach(Pin pin in _pins)
-        {
-            if(pin.PinValue != _properPinsValue)
+            if (_foodProductionTimeManager.IsValidTimer)
             {
-                return;
+                if (_foodProductionTimeManager.IsFinishedTimer)
+                {
+                    CalculateFood();
+                    _foodProductionTimeManager.StartTimer(foodProductionTime, 0f);
+                }
             }
+
+        }
+        if (_kmetTrainingtimeManager)
+        {
+            if (_kmetTrainingtimeManager.IsValidTimer)
+            {
+                if (_kmetTrainingtimeManager.IsFinishedTimer)
+                {
+                    
+                    _kmetTrainingtimeManager.InvalidateTimer();
+                    SetKmets(1);
+                    CalculateFoodProduction();
+                    _uiHandler.ResetTrainKmet();
+                }
+            }
+
         }
 
-        FinishGame();
+        if (_knightTrainingTimeManager)
+        {
+            if (_knightTrainingTimeManager.IsValidTimer)
+            {
+                if (_knightTrainingTimeManager.IsFinishedTimer)
+                {
+                    
+                    _knightTrainingTimeManager.InvalidateTimer();
+                    SetKnights(1);
+                    CalculateFoodProduction();
+                    _uiHandler.ResetTrainKnight();
+                }
+            }
+
+        }
     }
+
+
+    private void UpdateUI()
+    {
+        _uiHandler.UpdateUI(kmetsCount, knightsCount, foodProduction, foodDemandsByOneKnight * knightsCount, foodProductionByOneKmet * kmetsCount, foodCount, banditsCount);
+
+    }
+    public void CheckKmetsStatus() {
+
+            if (kmetsCount <= 0 && foodCount < kmetTrainignCost)
+            {
+                FailGame();
+            }
+
+        }
+
+        public void CalculateFood()
+        {
+            
+            foodCount = foodCount + foodProduction;
+        Debug.Log(foodCount);
+            UpdateUI();
+        }
+
+        public void CalculateFoodProduction()
+        {
+            foodProduction = foodProductionByOneKmet* kmetsCount - foodDemandsByOneKnight * knightsCount;
+            UpdateUI();
+        }
+
+
+    public void TrainKmet()
+    {
+        if(!_kmetTrainingtimeManager.IsValidTimer)
+        {
+            _kmetTrainingtimeManager.StartTimer(kmetTrainignTime, 0f);
+        }
+
+    }
+    public void TrainKnights()
+    {
+        if(!_knightTrainingTimeManager.IsValidTimer)
+        {
+            _knightTrainingTimeManager.StartTimer(knightTrainingTime, 0f);
+        }
+     
+    }
+
+    public void SetKnights(int value)
+        {
+            knightsCount += value;
+            UpdateUI();
+        }
+
+        public void SetKmets(int value)
+        {
+            kmetsCount += value;
+            UpdateUI();
+            CheckKmetsStatus();
+
+        }
+
 
     public void FinishGame()
-    {
-        
-        _timeManager.StopTimer();
-        _timeManager.InvalidateTimer();
-       
-        _currentLevel++;
-        _uiHandler.ShowFinishPanel(true);
-
-        if (_currentLevel >= levels.Length)
         {
-            _uiHandler.ShowLastPanel();
+
+            _uiHandler.ShowFinishPanel(true);
+
         }
-       
+
+        public void FailGame()
+        {
+            _uiHandler.ShowFinishPanel(false);
+        }
+
+        public void PauseGame()
+        {
+
+        }
+
+        public void ResumeGame()
+        {
+
+        }
+
+        public void StartGame()
+        {
+
+        }
+
+        public void RestartGame()
+        {
+
+            _uiHandler.SetBlockPanel(false);
+        }
+
+        public void SetCurrentLevel(int level)
+        {
+
+        }
+
+
     }
 
-    public void FailGame()
-    {
-        _uiHandler.ShowFinishPanel(false);
-    }
-
-    public void PauseGame()
-    {
-        
-      
-    }
-
-    public void ResumeGame()
-    {
-       
-    }
-
-    public void StartGame()
-    {
-
-    }
-
-    public void ChangePinsValues(int firstValue, int secondValue, int thirdValue)
-    {
- 
-        
-    }
-    public void ChangePinsValues(InstrumentsValue instrument)
-    {
-
-    }
-
-    public void RestartGame()
-    {
-       
-        _uiHandler.SetBlockPanel(false);
-    }
-
-    public void SetCurrentLevel(int level)
-    {
-        
-    }
-
-
-}
 
