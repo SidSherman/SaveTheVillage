@@ -48,14 +48,22 @@ public class UIHandler : MonoBehaviour
 
     public void TrainKmet()
     {
-        _manager.TrainKmet();
-        _trainKmetButton.interactable = false;
+        if(_manager.TrainKmet())
+        
+        {
+             _trainKmetButton.interactable = false;
+        }
+        Debug.Log("UIHandler Train kmet");
+       
     }
 
     public void TrainKnight()
     {
-        _manager.TrainKnights();
-        _trainKnightButton.interactable = false;
+        if (_manager.TrainKnights())
+        {
+             _trainKnightButton.interactable = false;
+        }
+       
     }
 
     public void ResetTrainKmet()

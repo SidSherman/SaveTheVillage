@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
                 {
                     
                     _kmetTrainingtimeManager.InvalidateTimer();
-                    SetKmets(1);
+                    AddKmets(1);
                     CalculateFoodProduction();
                     _uiHandler.ResetTrainKmet();
                 }
@@ -96,7 +96,8 @@ public class GameManager : MonoBehaviour
                 {
                     
                     _knightTrainingTimeManager.InvalidateTimer();
-                    SetKnights(1);
+                    AddKnights(1);
+                    AddKmets(-1);
                     CalculateFoodProduction();
                     _uiHandler.ResetTrainKnight();
                 }
@@ -111,6 +112,7 @@ public class GameManager : MonoBehaviour
                 {
                     _raidTimeManager.InvalidateTimer();
                     Fight();
+                    _raidTimeManager.StartTimer(raidTime, 0f);
                 }
             }
         }
@@ -122,13 +124,6 @@ public class GameManager : MonoBehaviour
         _uiHandler.UpdateUI(kmetsCount, knightsCount, foodProduction, foodDemandsByOneKnight * knightsCount, foodProductionByOneKmet * kmetsCount, foodCount, banditsCount);
 
     }
-    public void CheckKmetsStatus() {
-
-            if (kmetsCount <= 0 && foodCount < kmetTrainignCost)
-            {
-                FailGame();
-            }
-        }
 
         public void CalculateFood()
         {
@@ -143,34 +138,46 @@ public class GameManager : MonoBehaviour
         }
 
 
-    public void TrainKmet()
+    public bool TrainKmet()
     {
-        if(!_kmetTrainingtimeManager.IsValidTimer && foodCount > kmetTrainignCost)
+        if(!_kmetTrainingtimeManager.IsValidTimer)
         {
             _kmetTrainingtimeManager.StartTimer(kmetTrainignTime, 0f);
+            return true;
         }
+        else return false;
 
     }
-    public void TrainKnights()
+    public bool TrainKnights()
     {
-        if(!_knightTrainingTimeManager.IsValidTimer && foodCount > knightTrainingCost)
+        if(!_knightTrainingTimeManager.IsValidTimer && kmetsCount > 0)
         {
             _knightTrainingTimeManager.StartTimer(knightTrainingTime, 0f);
+            return true;
         }
+        else return false;
      
     }
 
-    public void SetKnights(int value)
+    public void AddKnights(int value)
     {
         knightsCount += value;
         UpdateUI();
     }
 
-    public void SetKmets(int value)
+    public void AddKmets(int value)
     {
-        kmetsCount += value;
+            
+        if (kmetsCount + value < 0)
+        {
+            FailGame();
+        }
+        else
+        {
+            kmetsCount += value;
+        }
+        
         UpdateUI();
-        CheckKmetsStatus();
 
     }
 
@@ -186,29 +193,30 @@ public class GameManager : MonoBehaviour
 
     public void Fight()
     {
-        int knightsCountTemp = knightsCount;
-        int kmetsCountTemp = kmetsCount;
+        int currentBanditsCount = banditsCount;
 
-        if (knightsCount >= banditsCount)
+
+        knightsCount = (int) Mathf.Round((knightsCount * bandNeedsToKillKnight - banditsCount) / bandNeedsToKillKnight);
+
+        int survivaledBanditsCount = currentBanditsCount;
+
+        for(int i = 1; i < survivaledBanditsCount; i += kmetsNeedsToKillBandit)
         {
-            for(int i = 1; i < banditsCount; i += bandNeedsToKillKnight)
-            {
-                knightsCountTemp--;
-            }
-            SetKnights(knightsCountTemp);
+
+            AddKmets(-1);
+            currentBanditsCount -= bandNeedsToKillKnight;
         }
 
         else
         {
-            kmetsCountTemp = kmetsCount - kmetsNeedsToKillBandit * (banditsCount - knightsCount * bandNeedsToKillKnight);
-            SetKnights(0);
-            SetKmets(kmetsCountTemp);
-               
+        
+            AddKnights(-knightsCount);
+            AddKmets(- kmetsNeedsToKillBandit * (banditsCount - knightsCount * bandNeedsToKillKnight));
         }
         IncreaseBanditsCount();
 
-
     }
+
     public void IncreaseBanditsCount()
     {
         if(raidAmount % banditsIncreasingRate == 0)
