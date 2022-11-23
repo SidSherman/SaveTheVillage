@@ -24,6 +24,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float raidTime = 20;
     [SerializeField] private int raidDelay = 0;
     [SerializeField] private int banditsCount = 0;
+    [SerializeField] private int banditsIncreasingRate = 3;
+    [SerializeField] private int bandNeedsToKillKnight= 2;
+    [SerializeField] private int kmetsNeedsToKillBandit = 3;
 
     [Header("Training Civilliance Info")]
     [SerializeField] private float kmetTrainignTime = 5;
@@ -37,6 +40,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int foodProductionByOneKmet;
     [SerializeField] private int foodProduction;
     [SerializeField] private int foodDemandsByOneKnight;
+
+    //Statistics
+    private int foodAmount;
+    private int foodWasted;
+    private int raidAmount;
+    private int kmetsAmount;
+    private int knightAmount;
+    private int banditsKilled;
 
 
     private void Start()
@@ -77,7 +88,6 @@ public class GameManager : MonoBehaviour
             }
 
         }
-
         if (_knightTrainingTimeManager)
         {
             if (_knightTrainingTimeManager.IsValidTimer)
@@ -91,7 +101,18 @@ public class GameManager : MonoBehaviour
                     _uiHandler.ResetTrainKnight();
                 }
             }
+        }
 
+        if (_raidTimeManager)
+        {
+            if (_raidTimeManager.IsValidTimer)
+            {
+                if (_raidTimeManager.IsFinishedTimer)
+                {
+                    _raidTimeManager.InvalidateTimer();
+                    Fight();
+                }
+            }
         }
     }
 
@@ -107,15 +128,12 @@ public class GameManager : MonoBehaviour
             {
                 FailGame();
             }
-
         }
 
         public void CalculateFood()
         {
-            
-            foodCount = foodCount + foodProduction;
-        Debug.Log(foodCount);
-            UpdateUI();
+           foodCount = foodCount + foodProduction;
+           UpdateUI();
         }
 
         public void CalculateFoodProduction()
@@ -127,7 +145,7 @@ public class GameManager : MonoBehaviour
 
     public void TrainKmet()
     {
-        if(!_kmetTrainingtimeManager.IsValidTimer)
+        if(!_kmetTrainingtimeManager.IsValidTimer && foodCount > kmetTrainignCost)
         {
             _kmetTrainingtimeManager.StartTimer(kmetTrainignTime, 0f);
         }
@@ -135,7 +153,7 @@ public class GameManager : MonoBehaviour
     }
     public void TrainKnights()
     {
-        if(!_knightTrainingTimeManager.IsValidTimer)
+        if(!_knightTrainingTimeManager.IsValidTimer && foodCount > knightTrainingCost)
         {
             _knightTrainingTimeManager.StartTimer(knightTrainingTime, 0f);
         }
@@ -143,59 +161,63 @@ public class GameManager : MonoBehaviour
     }
 
     public void SetKnights(int value)
+    {
+        knightsCount += value;
+        UpdateUI();
+    }
+
+    public void SetKmets(int value)
+    {
+        kmetsCount += value;
+        UpdateUI();
+        CheckKmetsStatus();
+
+    }
+
+    public void WinGame()
         {
-            knightsCount += value;
-            UpdateUI();
+        _uiHandler.ShowWinPanel();
+    }
+
+    public void FailGame()
+    {
+        _uiHandler.ShowFailPanel();
+    }
+
+    public void Fight()
+    {
+        int knightsCountTemp = knightsCount;
+        int kmetsCountTemp = kmetsCount;
+
+        if (knightsCount >= banditsCount)
+        {
+            for(int i = 1; i < banditsCount; i += bandNeedsToKillKnight)
+            {
+                knightsCountTemp--;
+            }
+            SetKnights(knightsCountTemp);
         }
 
-        public void SetKmets(int value)
+        else
         {
-            kmetsCount += value;
-            UpdateUI();
-            CheckKmetsStatus();
-
+            kmetsCountTemp = kmetsCount - kmetsNeedsToKillBandit * (banditsCount - knightsCount * bandNeedsToKillKnight);
+            SetKnights(0);
+            SetKmets(kmetsCountTemp);
+               
         }
-
-
-    public void FinishGame()
-        {
-
-            _uiHandler.ShowFinishPanel(true);
-
-        }
-
-        public void FailGame()
-        {
-            _uiHandler.ShowFinishPanel(false);
-        }
-
-        public void PauseGame()
-        {
-
-        }
-
-        public void ResumeGame()
-        {
-
-        }
-
-        public void StartGame()
-        {
-
-        }
-
-        public void RestartGame()
-        {
-
-            _uiHandler.SetBlockPanel(false);
-        }
-
-        public void SetCurrentLevel(int level)
-        {
-
-        }
+        IncreaseBanditsCount();
 
 
     }
+    public void IncreaseBanditsCount()
+    {
+        if(raidAmount % banditsIncreasingRate == 0)
+        {
+            banditsCount++;
+        }
+
+    }
+
+}
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
@@ -20,24 +21,18 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private Button _trainKmetButton;
     [SerializeField] private Button _trainKnightButton;
 
-    [SerializeField] private GameObject _rulesPanel;
     [SerializeField] private GameObject _startPanel;
-    [SerializeField] private GameObject _finishPanel;
-    [SerializeField] private GameObject _lastLevelPanel;
+    [SerializeField] private GameObject _menuPanel;
+    [SerializeField] private GameObject _failPanel;
+    [SerializeField] private GameObject _winPanel;
     [SerializeField] private GameObject _blockPanel;
 
-
-    [SerializeField] private FinishPanelUI _finishPanelUI;
-
     [SerializeField] private GameManager _manager;
-
-
  
     void Start()
     {
 
     }
-
 
     public void UpdateUI(int kmentCount, int knightCount,int foodProductionFull, int foodDemands, int foodProduction, int foodCount, int banditCount)
     {
@@ -73,89 +68,47 @@ public class UIHandler : MonoBehaviour
         _trainKnightButton.interactable = true;
     }
 
-
     public void SetUIOnTheStart()
     {
-      
-
-    }
-
-    public void ResumeGame()
-    {
-        SetBlockPanel(false);
-        _rulesPanel.SetActive(false);
         _startPanel.SetActive(false);
-        _finishPanel.SetActive(false);
-        _manager.ResumeGame();
-
+        _menuPanel.SetActive(true);
     }
 
-    public void ShowFinishPanel(bool isWin)
+    public void ResumePauseGame(bool shouldPause)
     {
-        _finishPanel.SetActive(true);
-     
-        SetBlockPanel(true);
-
-        if (isWin)
+        if (shouldPause)
         {
-            _finishPanelUI.SetMessage("Замок взломан!");
+            Time.timeScale = 0f;
+            _blockPanel.SetActive(true);
+            _menuPanel.SetActive(true);
+            _startPanel.SetActive(true);
         }
+
         else
-        { 
-            _finishPanelUI.SetMessage("Время вышло :(");
-
+        {
+            Time.timeScale = 1f;
+            _blockPanel.SetActive(false);
+            _menuPanel.SetActive(false);
+            _startPanel.SetActive(false);
         }
-    }
-
-    public void SetBlockPanel(bool value)
-    {
-        _blockPanel.SetActive(value);
-    }
-
-    public void RestartLevel()
-    {
-        SetBlockPanel(false);
-        _rulesPanel.SetActive(false);
-        _startPanel.SetActive(false);
-        _finishPanel.SetActive(false);
-        _manager.RestartGame();
-      
-    }
-
-    public void RestartGame()
-    {
        
-        _manager.SetCurrentLevel(0);
-        StartGame();
-
     }
 
-    public void StartGame()
+    public void ShowWinPanel()
     {
-        SetBlockPanel(false);
-        _rulesPanel.SetActive(false);
-        _startPanel.SetActive(false);
-        _finishPanel.SetActive(false);
-        _manager.StartGame();
+        _blockPanel.SetActive(true);
+        _winPanel.SetActive(true);
     }
 
-    public void ShowLastPanel()
+    public void ShowFailPanel()
     {
-        _rulesPanel.SetActive(false);
-        _startPanel.SetActive(false);
-        _finishPanel.SetActive(false);
-        _lastLevelPanel.SetActive(true);
-        SetBlockPanel(true);
-        _manager.PauseGame();
+        _blockPanel.SetActive(true);
+        _failPanel.SetActive(true);
     }
 
-    private void ShowRules()
+    public void LoadScene(string name)
     {
-        _rulesPanel.SetActive(true);
-        _startPanel.SetActive(false);
-        _finishPanel.SetActive(false);
-        SetBlockPanel(true);
-        _manager.PauseGame();
+        SceneManager.LoadScene(name);
     }
 
 }
