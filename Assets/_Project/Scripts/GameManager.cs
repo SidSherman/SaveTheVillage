@@ -256,13 +256,13 @@ public class GameManager : MonoBehaviour
 
     public void WinGame()
         {
-        _uiHandler.ShowWinPanel();
+        _uiHandler.ShowWinPanel(true);
     }
 
     public void FailGame()
     {
-        Debug.Log("Fail");
-        _uiHandler.ShowFailPanel();
+
+        _uiHandler.ShowFailPanel(true);
     }
 
     public void Fight()

@@ -21,9 +21,19 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _KnightPrice;
     [SerializeField] private TextMeshProUGUI _CurrentDay;
     [SerializeField] private TextMeshProUGUI _CurrentRaid;
+    [SerializeField] private TextMeshProUGUI _rulesText;
 
     [SerializeField] private Button _trainKmetButton;
     [SerializeField] private Button _trainKnightButton;
+
+    [SerializeField] private Image _pauseBttnImage;
+    [SerializeField] private Image _soundBttnImage;
+
+    [SerializeField] private Sprite _pauseBttnActive;
+    [SerializeField] private Sprite _pauseBttnInactive;
+    [SerializeField] private Sprite _soundBttnActive;
+    [SerializeField] private Sprite _soundBttnInactive;
+
 
     [SerializeField] private GameObject _startPanel;
     [SerializeField] private GameObject _menuPanel;
@@ -31,10 +41,14 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private GameObject _winPanel;
     [SerializeField] private GameObject _blockPanel;
 
+    [SerializeField] private AudioClip _clickSound;
+    [SerializeField] private AudioSource _audioSource;
+
     [SerializeField] private GameManager _manager;
 
-    [SerializeField] private string _rulesString;
-    [SerializeField] private TextMeshProUGUI _rulesText;
+    [SerializeField] private AudioListener _listener;
+
+
 
     void Start()
     {
@@ -74,10 +88,27 @@ public class UIHandler : MonoBehaviour
         _CurrentRaid.text = currentRaid.ToString();
     }
 
+
+
+    public void SoundOnOff()
+    {
+        if(_listener.enabled == true)
+        {
+            _listener.enabled = false;
+            _soundBttnImage.sprite = _soundBttnInactive;
+
+        }
+        else
+        {
+            _soundBttnImage.sprite = _soundBttnActive;
+            _listener.enabled = true;
+        }
+
+    }
+
     public void TrainKmet()
     {
-        if(_manager.TrainKmet())
-        
+        if(_manager.TrainKmet())      
         {
              _trainKmetButton.interactable = false;
         }
@@ -110,46 +141,64 @@ public class UIHandler : MonoBehaviour
         _menuPanel.SetActive(true);
     }
 
-    public void ResumePauseGame(bool shouldPause)
+    public void OpenRules(bool shouldPause)
     {
         if (shouldPause)
         {
-            Time.timeScale = 0f;
-          
+           
             _menuPanel.SetActive(true);
             _startPanel.SetActive(true);
         }
 
         else
         {
-            Time.timeScale = 1f;
             
             _menuPanel.SetActive(false);
             _startPanel.SetActive(false);
         }
-       
+
+        ResumePauseGame();
+
+    }
+    public void ResumePauseGame()
+    {
+        if (Time.timeScale == 0f)
+        {
+            _pauseBttnImage.sprite = _pauseBttnActive;
+            Time.timeScale = 1f;
+        }
+        else
+        {
+            _pauseBttnImage.sprite = _pauseBttnInactive;
+            Time.timeScale = 0f;
+        }
+
     }
 
-    public void ShowWinPanel()
+    public void ShowWinPanel(bool shouldShow)
     {
-        Time.timeScale = 0f;
-        _menuPanel.SetActive(true);
-     
-        _winPanel.SetActive(true);
+        ResumePauseGame();
+        _menuPanel.SetActive(shouldShow);
+        _winPanel.SetActive(shouldShow);
     }
 
-    public void ShowFailPanel()
+    public void ShowFailPanel(bool shouldShow)
     {
-        Time.timeScale = 0f;
-        _menuPanel.SetActive(true);
-        
-        _failPanel.SetActive(true);
+        ResumePauseGame();
+        _menuPanel.SetActive(shouldShow);
+        _failPanel.SetActive(shouldShow);
     }
 
     public void LoadScene(string name)
     {
         SceneManager.LoadScene(name);
     }
+
+    public void PlayClickSound()
+    {
+        _audioSource.PlayOneShot(_clickSound);
+    }
+
 
 }
 
