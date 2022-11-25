@@ -170,7 +170,7 @@ public class GameManager : MonoBehaviour
             {
                 SetKmets(kmetsCount - 1);
             }
-
+            foodCount = 0;
         }
 
         if(foodCount >= foodToBuldWalls)

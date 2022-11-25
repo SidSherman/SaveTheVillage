@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 
-public class UIHandler : MonoBehaviour
+public class UIHandler : UIHandlerMain
 {
 
     [SerializeField] private TextMeshProUGUI _kmetCountLabel;
@@ -25,15 +25,10 @@ public class UIHandler : MonoBehaviour
 
     [SerializeField] private Button _trainKmetButton;
     [SerializeField] private Button _trainKnightButton;
-
     [SerializeField] private Image _pauseBttnImage;
-    [SerializeField] private Image _soundBttnImage;
 
     [SerializeField] private Sprite _pauseBttnActive;
     [SerializeField] private Sprite _pauseBttnInactive;
-    [SerializeField] private Sprite _soundBttnActive;
-    [SerializeField] private Sprite _soundBttnInactive;
-
 
     [SerializeField] private GameObject _startPanel;
     [SerializeField] private GameObject _menuPanel;
@@ -41,30 +36,27 @@ public class UIHandler : MonoBehaviour
     [SerializeField] private GameObject _winPanel;
     [SerializeField] private GameObject _blockPanel;
 
-    [SerializeField] private AudioClip _clickSound;
-    [SerializeField] private AudioSource _audioSource;
-
     [SerializeField] private GameManager _manager;
-
-    [SerializeField] private AudioListener _listener;
 
 
 
     void Start()
     {
-
+        Time.timeScale = 0f;
         _rulesText.text = $"\tВы - глава деревни.\r\n\t" +
-            $"С недавнего времени в ваших краях появились бандиты. " +
-            $"Для защиты от них вы решили построить стены и выкопать ров. " +
+            $"В ваших краях появились бандиты. " +
+            $"Для защиты от них необходимо построить стены и выкопать ров. " +
             $"Однако, это дело не быстрое и займет около {_manager.DaysToWin} дней. " +
             $"Вы можете ускорить строительство, наняв опытную бригаду строителей, " +
             $"но на это требуется {_manager.FoodToBuldWalls} пшеницы. " +
             $"Один крестьянин производит {_manager.FoodProductionByOneKmet} пшеницу.\r\n\t" +
-            $"Разведчик сообщил, что бандиты через {_manager.RaidDelay} дня главарь бандитов начнет отправлять рейды на деревню. " +
-            $"Для защиты от бандитов можно нанять рыцаря. Один рыцарь берет {_manager.FoodDemandsByOneKnight} пшеницу" +
+            $"Разведчик сообщил, что через {_manager.RaidDelay} дня бандиты начнут на деревню. " +
+            $"Для защиты от них нужны рыцари. Один рыцарь берет {_manager.FoodDemandsByOneKnight} пшеницу" +
             $" в качестве оплаты испособен победить {_manager.BandNeedsToKillKnight} бандитов.\r\n\t" +
             $"{_manager.KmetsNeedsToKillBandit} крестянина могу справиться с одним бандитом" +
-            $"3аметьте, что на найм крестьянина и тренировку рыцаря уходит время, а с каждым рейдом количество бандитов увеличивается на 1.\r\n\t" +
+            $"Найм крестьян и рыцарей происходит мгновенно, но требует пшеницы. Вы так же можете тренировать крестьян бесплатно, но на это уходит время." +
+            $"К тому же для тренировки рыцаря нужно переобучить крестьянина.\r\n\t" +
+            $"С каждым рейдом количество бандитов увеличивается на 1." +
             $"Если в деревне останется меньше крестьян, чем необходимо для защиты деревни, то деревня будет разрушена" +
             $"Yдачи, спасти деревню.";
     
@@ -86,24 +78,6 @@ public class UIHandler : MonoBehaviour
 
         _CurrentDay.text = currentDay.ToString();
         _CurrentRaid.text = currentRaid.ToString();
-    }
-
-
-
-    public void SoundOnOff()
-    {
-        if(_listener.enabled == true)
-        {
-            _listener.enabled = false;
-            _soundBttnImage.sprite = _soundBttnInactive;
-
-        }
-        else
-        {
-            _soundBttnImage.sprite = _soundBttnActive;
-            _listener.enabled = true;
-        }
-
     }
 
     public void TrainKmet()
@@ -188,17 +162,6 @@ public class UIHandler : MonoBehaviour
         _menuPanel.SetActive(shouldShow);
         _failPanel.SetActive(shouldShow);
     }
-
-    public void LoadScene(string name)
-    {
-        SceneManager.LoadScene(name);
-    }
-
-    public void PlayClickSound()
-    {
-        _audioSource.PlayOneShot(_clickSound);
-    }
-
 
 }
 
