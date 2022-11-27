@@ -12,15 +12,15 @@ public class UIHandler : UIHandlerMain
 
     [SerializeField] private TextMeshProUGUI _kmetCountLabel;
     [SerializeField] private TextMeshProUGUI _knightCountLabel;
-    [SerializeField] private TextMeshProUGUI _FoodProductionFullLabel;
-    [SerializeField] private TextMeshProUGUI _FoodDemandslabel;
-    [SerializeField] private TextMeshProUGUI _FoodProductionLabel;
-    [SerializeField] private TextMeshProUGUI _FoodCountLabel;
-    [SerializeField] private TextMeshProUGUI _BanditsCountLabel;
-    [SerializeField] private TextMeshProUGUI _KmetPrice;
-    [SerializeField] private TextMeshProUGUI _KnightPrice;
-    [SerializeField] private TextMeshProUGUI _CurrentDay;
-    [SerializeField] private TextMeshProUGUI _CurrentRaid;
+    [SerializeField] private TextMeshProUGUI _foodProductionFullLabel;
+    [SerializeField] private TextMeshProUGUI _foodDemandslabel;
+    [SerializeField] private TextMeshProUGUI _foodProductionLabel;
+    [SerializeField] private TextMeshProUGUI _foodCountLabel;
+    [SerializeField] private TextMeshProUGUI _banditsCountLabel;
+    [SerializeField] private TextMeshProUGUI _kmetPrice;
+    [SerializeField] private TextMeshProUGUI _knightPrice;
+    [SerializeField] private TextMeshProUGUI _currentDay;
+    [SerializeField] private TextMeshProUGUI _currentRaid;
     [SerializeField] private TextMeshProUGUI _rulesText;
 
     [SerializeField] private Button _trainKmetButton;
@@ -54,11 +54,11 @@ public class UIHandler : UIHandlerMain
             $"Для защиты от них нужны рыцари. Один рыцарь берет {_manager.FoodDemandsByOneKnight} пшеницу" +
             $" в качестве оплаты испособен победить {_manager.BandNeedsToKillKnight} бандитов.\r\n\t" +
             $"{_manager.KmetsNeedsToKillBandit} крестянина могу справиться с одним бандитом" +
-            $"Найм крестьян и рыцарей происходит мгновенно, но требует пшеницы. Вы так же можете тренировать крестьян бесплатно, но на это уходит время." +
+            $"Найм рыцарей происходит мгновенно, но требует пшеницы. Вы так же можете тренировать рыцарей бесплатно, но на это уходит время." +
             $"К тому же для тренировки рыцаря нужно переобучить крестьянина.\r\n\t" +
-            $"С каждым рейдом количество бандитов увеличивается на 1." +
-            $"Если в деревне останется меньше крестьян, чем необходимо для защиты деревни, то деревня будет разрушена" +
-            $"Yдачи, спасти деревню.";
+            $"С каждым {_manager.BanditsIncreasingRate} рейдом количество бандитов увеличивается на 1." +
+            $"Если в деревне останется меньше крестьян, чем необходимо для защиты деревни, то деревня будет захвачена.\r\n\t" +
+            $"Удачи, спасти деревню.";
     
     }
 
@@ -67,17 +67,17 @@ public class UIHandler : UIHandlerMain
     {
         _kmetCountLabel.text = kmentCount.ToString();
         _knightCountLabel.text = knightCount.ToString();
-        _FoodProductionFullLabel.text = foodProductionFull.ToString();
-        _FoodDemandslabel.text = foodDemands.ToString();
-        _FoodProductionLabel.text = foodProduction.ToString();
-        _FoodCountLabel.text = foodCount.ToString();
-        _BanditsCountLabel.text = banditCount.ToString();
+        _foodProductionFullLabel.text = foodProductionFull.ToString();
+        _foodDemandslabel.text = foodDemands.ToString();
+        _foodProductionLabel.text = foodProduction.ToString();
+        _foodCountLabel.text = foodCount.ToString();
+        _banditsCountLabel.text = banditCount.ToString();
 
-        _KmetPrice.text = kmetPrice.ToString();
-        _KnightPrice.text = knightPrice.ToString();
+        _kmetPrice.text = kmetPrice.ToString();
+        _knightPrice.text = knightPrice.ToString();
 
-        _CurrentDay.text = currentDay.ToString();
-        _CurrentRaid.text = currentRaid.ToString();
+        _currentDay.text = currentDay.ToString();
+        _currentRaid.text = currentRaid.ToString();
     }
 
     public void TrainKmet()
@@ -86,8 +86,6 @@ public class UIHandler : UIHandlerMain
         {
              _trainKmetButton.interactable = false;
         }
-       
-       
     }
 
     public void TrainKnight()
@@ -96,7 +94,6 @@ public class UIHandler : UIHandlerMain
         {
              _trainKnightButton.interactable = false;
         }
-       
     }
 
     public void ResetTrainKmet()
@@ -119,21 +116,18 @@ public class UIHandler : UIHandlerMain
     {
         if (shouldPause)
         {
-           
             _menuPanel.SetActive(true);
             _startPanel.SetActive(true);
         }
-
         else
         {
-            
             _menuPanel.SetActive(false);
             _startPanel.SetActive(false);
         }
 
         ResumePauseGame();
-
     }
+
     public void ResumePauseGame()
     {
         if (Time.timeScale == 0f)

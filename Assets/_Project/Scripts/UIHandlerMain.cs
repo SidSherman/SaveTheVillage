@@ -16,17 +16,12 @@ public class UIHandlerMain : MonoBehaviour
     [SerializeField] protected AudioSource _audioSource;
     [SerializeField] protected AudioListener _listener;
 
-    void Start()
-    {
-
-    }
     public void SoundOnOff()
     {
         if(_listener.enabled == true)
         {
             _listener.enabled = false;
             _soundBttnImage.sprite = _soundBttnInactive;
-
         }
         else
         {
@@ -38,6 +33,11 @@ public class UIHandlerMain : MonoBehaviour
     public void LoadScene(string name)
     {
         SceneManager.LoadScene(name);
+    }
+
+    public void CloseGame()
+    {
+        Application.Quit();
     }
 
     public void PlayClickSound()

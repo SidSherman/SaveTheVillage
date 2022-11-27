@@ -50,52 +50,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a2c3c41d5331284fbeb3a275005cf17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pins:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  _timeManager: {fileID: 0}
   _uiHandler: {fileID: 0}
-  _hammer:
-    _pin1: 2
-    _pin2: -1
-    _pin3: 3
-  _screw:
-    _pin1: -3
-    _pin2: 2
-    _pin3: -1
-  _picklock:
-    _pin1: 1
-    _pin2: -1
-    _pin3: -2
-  levels:
-  - _pins:
-      _pin1: 2
-      _pin2: 7
-      _pin3: 4
-    _targetValue: 5
-  - _pins:
-      _pin1: 10
-      _pin2: 2
-      _pin3: 9
-    _targetValue: 5
-  - _pins:
-      _pin1: 8
-      _pin2: 3
-      _pin3: 6
-    _targetValue: 5
-  - _pins:
-      _pin1: 5
-      _pin2: 4
-      _pin3: 3
-    _targetValue: 5
-  - _pins:
-      _pin1: 3
-      _pin2: 7
-      _pin3: 9
-    _targetValue: 5
-  _currentLevel: 0
-  _gameTime: 15
+  _kmetTrainingtimeManager: {fileID: 0}
+  _knightTrainingTimeManager: {fileID: 0}
+  _raidTimeManager: {fileID: 0}
+  _foodProductionTimeManager: {fileID: 0}
+  kmetsCount: 1
+  knightsCount: 0
+  _raidTime: 20
+  _raidDelay: 3
+  _banditsCount: 1
+  _banditsIncreasingRate: 5
+  _bandNeedsToKillKnight: 2
+  _kmetsNeedsToKillBandit: 5
+  _kmetTrainignTime: 5
+  _knightTrainingTime: 7
+  _kmetCost: 5
+  _knightCost: 10
+  _foodProductionTime: 10
+  _foodProductionByOneKmet: 1
+  _foodProduction: 0
+  _foodDemandsByOneKnight: 3
+  _foodToBuldWalls: 1000
+  _daysToWin: 50
 --- !u!222 &4250413327880724931
 CanvasRenderer:
   m_ObjectHideFlags: 0
